@@ -1,4 +1,6 @@
-use crate::modules::db::service::DatabaseImpl;
+use crate::modules::db::service::{DatabaseImpl, DatabaseTable};
+
+use super::Task;
 
 #[derive(Clone)]
 pub struct TaskModel {
@@ -11,7 +13,8 @@ impl PartialEq for TaskModel {
 }
 
 pub trait TaskRepo {
-    fn create(&mut self, name: String) -> TaskModel;
+    fn get_tasks(&mut self) -> Vec<Task>;
+    fn create_task(&mut self, name: String) -> TaskModel;
 }
 
 pub struct TaskRepoImpl {
@@ -19,7 +22,11 @@ pub struct TaskRepoImpl {
 }
 
 impl TaskRepo for TaskRepoImpl {
-    fn create(&mut self, name: String) -> TaskModel {
+    fn get_tasks(&mut self) -> Vec<Task> {
+        self.db.get_all()
+    }
+
+    fn create_task(&mut self, name: String) -> TaskModel {
         let (_, row) = self.db.create(TaskModel { name }).unwrap();
         row
     }

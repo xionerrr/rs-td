@@ -4,22 +4,23 @@ use super::{repo::TaskRepo, Task, TaskStatus};
 
 pub trait TaskService {
     fn getTasks(&self) -> Result<Vec<Task>, Error>;
-    fn createTask(&self, task_name: String) -> Result<Task, Error>;
+    fn createTask(&mut self, task_name: String) -> Result<Task, Error>;
     fn editTask(&self, task_id: usize, task_status: TaskStatus) -> Result<Task, Error>;
     fn removeTask(&self, task_id: usize) -> Result<Task, Error>;
 }
 
 pub struct TaskServiceImpl {
-    task_repo: impl TaskRepo,
+    task_repo: dyn TaskRepo,
 }
 
 impl TaskService for TaskServiceImpl {
     fn getTasks(&self) -> Result<Vec<Task>, Error> {
+        self.task_repo.get_tasks();
         todo!()
     }
 
-    fn createTask(&self, task_name: String) -> Result<Task, Error> {
-        self.task_repo.create(task_name);
+    fn createTask(&mut self, task_name: String) -> Result<Task, Error> {
+        self.task_repo.create_task(task_name);
         todo!()
     }
 
