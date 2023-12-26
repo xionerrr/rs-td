@@ -2,17 +2,13 @@ use std::collections::HashMap;
 
 use itertools::Itertools;
 
-#[derive(Debug)]
-pub enum DBError {
-    NotFound,
-    AlreadyExists,
-}
+use crate::modules::helpers::errors::Error;
 
 pub trait DatabaseTable<T> {
     fn get_all(&self) -> Vec<(usize, T)>;
-    fn get_one(&self, id: usize) -> Result<(usize, T), DBError>;
-    fn create(&mut self, data: T) -> Result<(usize, T), DBError>;
-    fn delete(&mut self, id: usize) -> Result<(usize, T), DBError>;
+    fn get_one(&self, id: usize) -> Result<(usize, T), Error>;
+    fn create(&mut self, data: T) -> Result<(usize, T), Error>;
+    fn delete(&mut self, id: usize) -> Result<(usize, T), Error>;
 }
 
 #[derive(Debug, Default)]
@@ -47,19 +43,19 @@ impl<T: PartialEq + Clone + Ord> DatabaseTable<T> for DatabaseImpl<T> {
         result
     }
 
-    fn get_one(&self, id: usize) -> Result<(usize, T), DBError> {
+    fn get_one(&self, id: usize) -> Result<(usize, T), Error> {
         self.storage
             .get(&id)
             .cloned()
             .map(|data| (id, data))
-            .ok_or(DBError::NotFound)
+            .ok_or(Error::NotFound)
     }
 
-    fn create(&mut self, data: T) -> Result<(usize, T), DBError> {
+    fn create(&mut self, data: T) -> Result<(usize, T), Error> {
         let already_exists = self.storage.iter().find(|(_, db_item)| **db_item == data);
 
         if already_exists.is_some() {
-            Err(DBError::AlreadyExists)
+            Err(Error::AlreadyExists)
         } else {
             let id = self.last_id;
             self.last_id += 1;
@@ -69,11 +65,11 @@ impl<T: PartialEq + Clone + Ord> DatabaseTable<T> for DatabaseImpl<T> {
         }
     }
 
-    fn delete(&mut self, id: usize) -> Result<(usize, T), DBError> {
+    fn delete(&mut self, id: usize) -> Result<(usize, T), Error> {
         if let Some((db_id, data)) = self.storage.remove_entry(&id) {
             Ok((db_id, data))
         } else {
-            Err(DBError::NotFound)
+            Err(Error::NotFound)
         }
     }
 }
