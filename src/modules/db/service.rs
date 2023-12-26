@@ -80,7 +80,7 @@ impl<T: PartialEq + Clone + Ord> DatabaseTable<T> for DatabaseImpl<T> {
 
 #[cfg(test)]
 mod tests {
-    use std::{collections::HashMap, vec};
+    use std::vec;
 
     use super::{DatabaseImpl, DatabaseTable};
 
@@ -128,8 +128,11 @@ mod tests {
 
         let result = db.create(DBRow("Test".into())).unwrap();
         let expected_result = (0, DBRow("Test".into()));
-
         assert_eq!(result, expected_result);
+
+        let result2 = db.create(DBRow("Test".into()));
+
+        assert!(result2.is_err());
     }
 
     #[test]
@@ -137,8 +140,12 @@ mod tests {
         let mut db = DatabaseImpl::<DBRow>::new(vec![DBRow("Test".into())]);
 
         db.delete(0).unwrap();
-        let expected_result = HashMap::new();
+        let result = db.get_one(0);
 
-        assert_eq!(db.storage, expected_result);
+        assert!(result.is_err());
+
+        let (id, _) = db.create(DBRow("Test".into())).unwrap();
+
+        assert!(id != 0);
     }
 }
