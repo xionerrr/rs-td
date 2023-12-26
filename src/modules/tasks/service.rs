@@ -3,18 +3,18 @@ use std::fmt::Error;
 use super::{repo::TaskRepo, Task, TaskStatus};
 
 pub trait TaskService {
-    fn getTasks(&self) -> Result<Vec<Task>, Error>;
+    fn getTasks(&mut self) -> Result<Vec<Task>, Error>;
     fn createTask(&mut self, task_name: String) -> Result<Task, Error>;
-    fn editTask(&self, task_id: usize, task_status: TaskStatus) -> Result<Task, Error>;
-    fn removeTask(&self, task_id: usize) -> Result<Task, Error>;
+    fn editTask(&mut self, task_id: usize, task_status: TaskStatus) -> Result<Task, Error>;
+    fn removeTask(&mut self, task_id: usize) -> Result<Task, Error>;
 }
 
-pub struct TaskServiceImpl {
-    task_repo: dyn TaskRepo,
+pub struct TaskServiceImpl<T: TaskRepo> {
+    task_repo: T,
 }
 
-impl TaskService for TaskServiceImpl {
-    fn getTasks(&self) -> Result<Vec<Task>, Error> {
+impl<T: TaskRepo> TaskService for TaskServiceImpl<T> {
+    fn getTasks(&mut self) -> Result<Vec<Task>, Error> {
         self.task_repo.get_tasks();
         todo!()
     }
@@ -24,11 +24,11 @@ impl TaskService for TaskServiceImpl {
         todo!()
     }
 
-    fn editTask(&self, task_id: usize, task_status: TaskStatus) -> Result<Task, Error> {
+    fn editTask(&mut self, task_id: usize, task_status: TaskStatus) -> Result<Task, Error> {
         todo!()
     }
 
-    fn removeTask(&self, task_id: usize) -> Result<Task, Error> {
+    fn removeTask(&mut self, task_id: usize) -> Result<Task, Error> {
         todo!()
     }
 }

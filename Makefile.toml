@@ -1,0 +1,10 @@
+[config]
+skip_core_tasks = true
+
+[tasks.dev]
+script = "cargo run"
+watch = true
+
+[tasks.dev_tests]
+script = "cargo test"
+watch = true

@@ -1,11 +1,10 @@
 use crate::modules::db::service::{DatabaseImpl, DatabaseTable};
 
-use super::Task;
-
 #[derive(Clone)]
 pub struct TaskModel {
     pub name: String,
 }
+
 impl PartialEq for TaskModel {
     fn eq(&self, other: &Self) -> bool {
         self.name == other.name
@@ -13,8 +12,12 @@ impl PartialEq for TaskModel {
 }
 
 pub trait TaskRepo {
-    fn get_tasks(&mut self) -> Vec<Task>;
-    fn create_task(&mut self, name: String) -> TaskModel;
+    type Model;
+
+    fn get_tasks(&mut self) -> Vec<(usize, Self::Model)>;
+    fn get_task(&mut self, id: usize) -> (usize, Self::Model);
+    fn create_task(&mut self, name: String) -> (usize, Self::Model);
+    fn delete_task(&mut self, id: usize);
 }
 
 pub struct TaskRepoImpl {
@@ -22,12 +25,21 @@ pub struct TaskRepoImpl {
 }
 
 impl TaskRepo for TaskRepoImpl {
-    fn get_tasks(&mut self) -> Vec<Task> {
-        self.db.get_all()
+    type Model = TaskModel;
+
+    fn get_tasks(&mut self) -> Vec<(usize, Self::Model)> {
+        todo!()
     }
 
-    fn create_task(&mut self, name: String) -> TaskModel {
-        let (_, row) = self.db.create(TaskModel { name }).unwrap();
-        row
+    fn get_task(&mut self, id: usize) -> (usize, Self::Model) {
+        todo!()
+    }
+
+    fn create_task(&mut self, name: String) -> (usize, Self::Model) {
+        todo!()
+    }
+
+    fn delete_task(&mut self, id: usize) {
+        todo!()
     }
 }
