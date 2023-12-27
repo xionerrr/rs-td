@@ -1,4 +1,4 @@
-use crate::modules::db::service::{DatabaseImpl, DatabaseTable};
+use crate::modules::db::service::DatabaseImpl;
 
 #[derive(Clone)]
 pub struct TaskModel {

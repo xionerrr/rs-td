@@ -1,6 +1,9 @@
 use std::fmt::Error;
 
-use super::{repo::TaskRepo, Task, TaskStatus};
+use super::{
+    models::{Task, TaskStatus},
+    repo::TaskRepo,
+};
 
 pub trait TaskService {
     fn getTasks(&mut self) -> Result<Vec<Task>, Error>;
