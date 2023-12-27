@@ -1,9 +1,14 @@
 use std::fmt::Error;
 
-use super::{
-    models::{Task, TaskStatus},
-    repo::TaskRepo,
-};
+use crate::modules::helpers::statuses::TaskStatus;
+
+use super::repo::TaskRepo;
+
+pub struct Task {
+    pub id: usize,
+    pub task_name: String,
+    pub status: TaskStatus,
+}
 
 pub trait TaskService {
     fn getTasks(&mut self) -> Result<Vec<Task>, Error>;
