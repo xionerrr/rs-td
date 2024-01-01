@@ -12,19 +12,19 @@ fn get_all() {
         DBRow("Test2".into()),
     ]);
 
-    let result = db.get_all();
+    let (storage, last_id, users) = db.get_all();
     let expected_result = vec![
         (0, DBRow("Test".into())),
         (1, DBRow("Test1".into())),
         (2, DBRow("Test2".into())),
     ];
 
-    assert_eq!(result, expected_result);
+    assert_eq!(storage, expected_result);
 }
 
 #[test]
 fn get_one() {
-    let db = DatabaseImpl::<DBRow>::new(vec![
+    let db: DatabaseImpl<DBRow> = DatabaseImpl::<DBRow>::new(vec![
         DBRow("Test".into()),
         DBRow("Test1".into()),
         DBRow("Test2".into()),

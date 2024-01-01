@@ -2,18 +2,19 @@ use std::collections::HashMap;
 
 use itertools::Itertools;
 
-use crate::modules::helpers::errors::Error;
+use crate::modules::{helpers::errors::Error, users::service::User};
 
 pub trait DatabaseTable<T> {
-    fn get_all(&self) -> Vec<(usize, T)>;
+    fn get_all(&self) -> (Vec<(usize, T)>, usize, HashMap<usize, User>);
     fn get_one(&self, id: usize) -> Result<(usize, T), Error>;
     fn create(&mut self, data: T) -> Result<(usize, T), Error>;
     fn delete(&mut self, id: usize) -> Result<(usize, T), Error>;
 }
 
-#[derive(Debug, Default)]
+#[derive(Debug, Default, Clone)]
 pub struct DatabaseImpl<T> {
     storage: HashMap<usize, T>,
+    users: HashMap<usize, User>,
     last_id: usize,
 }
 
@@ -26,13 +27,14 @@ impl<T> DatabaseImpl<T> {
 
         Self {
             last_id: data.len(),
+            users: HashMap::new(),
             storage: data,
         }
     }
 }
 
 impl<T: PartialEq + Clone + Ord> DatabaseTable<T> for DatabaseImpl<T> {
-    fn get_all(&self) -> Vec<(usize, T)> {
+    fn get_all(&self) -> (Vec<(usize, T)>, usize, HashMap<usize, User>) {
         let mut result = self
             .storage
             .iter()
@@ -40,7 +42,7 @@ impl<T: PartialEq + Clone + Ord> DatabaseTable<T> for DatabaseImpl<T> {
             .collect_vec();
 
         result.sort();
-        result
+        (result, self.last_id.clone(), self.users.clone())
     }
 
     fn get_one(&self, id: usize) -> Result<(usize, T), Error> {
